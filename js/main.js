@@ -14,7 +14,7 @@ const accessoryCheckboxes = document.querySelectorAll(
 );
 const downPaymentElement = document.querySelector("#down-payment");
 const monthlyPaymentElement = document.querySelector("#monthly-payment");
-console.log(interiorImage)
+console.log(interiorImage);
 
 const basePrice = 52490;
 let currentPrice = basePrice;
@@ -52,7 +52,7 @@ const exteriorImages = {
   "Deep Blue": "./images/model-y-deep-blue-metallic.jpg",
   "Solid Black": "./images/model-y-solid-black.jpg",
   "Ultra Red": "./images/model-y-ultra-red.jpg",
-  "Quicksilver": "./images/model-y-quicksilver.jpg",
+  Quicksilver: "./images/model-y-quicksilver.jpg",
 };
 
 const interiorImages = {
@@ -61,29 +61,70 @@ const interiorImages = {
 };
 
 // Handle Color Selection
-const  handleColorButtonClick = (event, section, imageElement, images) => {
+const handleColorButtonClick = (event, section, imageElement, images) => {
   let button;
-  if(event.target.tagName === "IMG"){
+  if (event.target.tagName === "IMG") {
     button = event.target.closest("button");
+  } else if (event.target.tagName === "BUTTON") {
+    button = event.target;
+  }
+  if (button) {
+    const buttons = section.querySelectorAll("button");
+    buttons.forEach((btn) => btn.classList.remove("btn-selected"));
+    button.classList.add("btn-selected");
 
+    const color = button.querySelector("img").alt;
+    if (images[color]) {
+      imageElement.src = images[color];
+      selectedColor = color;
+    }
+  }
+};
 
-} else if (event.target.tagName === "BUTTON"){
-  button = event.target;
+// update exterior image based on color and wheels
+
+const updateExteriorImage = () => {
+  const performanceSuffix = selectedOptions["Performance Wheels"] ?'-performance' : '';
+  const colorKey = selectedColor in exteriorImages ? selectedColor : "Stealth Grey"; 
+  exteriorImage.src = exteriorImages[colorKey].replace('.jpg', `${performanceSuffix}.jpg`);
 }
-if(button) {
-  const buttons = section.querySelectorAll("button");
-  buttons.forEach((btn) => btn.classList.remove("btn-selected"));
-  button.classList.add("btn-selected");
 
-  const color = button.querySelector("img").alt;
-  if(images[color]){
-    imageElement.src = images[color];
-    selectedColor = color;
-  }  
-    
-}
-}
+// Wheel selection
+// const handleWheelButtonClick = (event) => {
+//   if (event.target.tagName === "BUTTON") {
+//     const buttons = document.querySelectorAll("#wheel-buttons button");
+//     buttons.forEach((button) =>
+//       button.classList.remove("bg-gray-700", "text-white")
+//     );
 
+//     // Add selected styles to clicked button
+//     event.target.classList.add("bg-gray-700", "text-white");
+//     const selectedWheel = event.target.textContent.includes("Performance");
+
+//     exteriorImage.src = selectedWheel
+//       ? "./images/model-y-stealth-grey-performance.jpg"
+//       : "./images/model-y-stealth-grey.jpg";
+//   }
+// };
+
+// Wheel selection
+const handleWheelButtonClick = (event) => {
+  if (event.target.tagName === "BUTTON") {
+    const buttons = document.querySelectorAll("#wheel-buttons button");
+    buttons.forEach((button) =>
+      button.classList.remove("bg-gray-700", "text-white")
+    );
+
+    // Add selected styles to the clicked button
+    event.target.classList.add("bg-gray-700", "text-white");
+
+    // Update the selected wheel option
+    selectedOptions["Performance Wheels"] = event.target.textContent.includes("Performance");
+
+    // Update the exterior image based on the selected wheel and color
+    updateExteriorImage();
+  }
+};
 
 
 // Event Listeners
@@ -96,4 +137,4 @@ exteriorButtons.addEventListener("click", (event) =>
 interiorButtons.addEventListener("click", (event) =>
   handleColorButtonClick(event, interiorButtons, interiorImage, interiorImages)
 );
-
+wheelButtonsSection.addEventListener("click", handleWheelButtonClick);
