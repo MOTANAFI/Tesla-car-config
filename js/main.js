@@ -75,8 +75,9 @@ const handleColorButtonClick = (event, section, imageElement, images) => {
 
     const color = button.querySelector("img").alt;
     if (images[color]) {
-      imageElement.src = images[color];
+      // imageElement.src = images[color];
       selectedColor = color;
+      updateExteriorImage()
     }
   }
 };
@@ -135,6 +136,6 @@ exteriorButtons.addEventListener("click", (event) =>
 );
 
 interiorButtons.addEventListener("click", (event) =>
-  handleColorButtonClick(event, interiorButtons, interiorImage, interiorImages)
+  handleColorButtonClick(event, interiorButtons, interiorImage, interiorImages, true)
 );
 wheelButtonsSection.addEventListener("click", handleWheelButtonClick);
