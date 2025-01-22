@@ -14,7 +14,6 @@ const accessoryCheckboxes = document.querySelectorAll(
 );
 const downPaymentElement = document.querySelector("#down-payment");
 const monthlyPaymentElement = document.querySelector("#monthly-payment");
-console.log(interiorImage);
 
 const basePrice = 52490;
 let currentPrice = basePrice;
@@ -65,8 +64,29 @@ const updateTotalPrice = () => {
     }
   });
   totalPriceElement.textContent = `$${currentPrice.toLocaleString()}`;
+  updatePaymentBreakdown();
 };
 
+// Udate payment breakdown based on current price
+const updatePaymentBreakdown = () => {
+  // calculate the down payment
+  const donwnPayment = currentPrice * 0.1;
+  downPaymentElement.textContent = `$${donwnPayment.toLocaleString()}`;
+  // Calculate loan details (assuming loan and 3% interest rate)
+  const loanTermMonth = 60;
+  const interestRate = 0.03;
+  const loanAmount = currentPrice - donwnPayment;
+  // Monthly payment formula: P * (r(1+r)^n) / ((1+r)^n - 1)
+  const monthlyInterestRate = interestRate / 12;
+  const monthlyPayment =
+    (loanAmount *
+      (monthlyInterestRate *
+        Math.pow(1 + monthlyInterestRate, loanTermMonth))) /
+    (Math.pow(1 + monthlyInterestRate, loanTermMonth) - 1);
+  monthlyPaymentElement.textContent = `$${monthlyPayment
+    .toFixed(2)
+    .toLocaleString()}`;
+};
 // handle Tob Bar On Scroll
 
 const handleScrol = () => {
@@ -189,6 +209,9 @@ const fullSelfDrivingChange = () => {
 accessoryCheckboxes.forEach((checkbox) => {
   checkbox.addEventListener("change", () => updateTotalPrice());
 });
+
+// Initail Update Total price
+updateTotalPrice();
 
 // Event Listeners
 
